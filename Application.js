@@ -7,60 +7,86 @@
         This is based on an early kernel of the MetaEarth-project.
         Reference: https://github.com/KenanSulayman/MetaEarth/blob/7e76174165a29a350c52fdb646d71cd7c781e5f2/Application.js
  */
-        
-var $ = function (v) {return require(v);}
-var http = $('http'),
-        fs = $('fs'),
-        url = $('url'),
-        path = $('path');
 
-global.b64e = function (a) { // b64e+utf8
-        var e, b, c, d, f = 0,
-                k = 0,
-                h = "",
-                h = [];
+var $ = function (v) { return require(v); }, Config, fs, http, path, url;
+
+http = $("http"), fs = $("fs"), url = $("url"). path = $("path");
+
+global.b64e = function (a) {
+        var b, c, d, e, f, g, h, i, j, k;
+        e = void 0;
+        b = void 0;
+        c = void 0;
+        d = void 0;
+        f = 0;
+        k = 0;
+        h = "";
+        h = [];
         if (!a) return a;
         a += "";
-        if (a === null || typeof a === "undefined") a = "";
-        else {
+        if (!(a === null || typeof a === "undefined")) {
                 a += "";
                 e = "";
                 b = c = d = 0;
                 d = a.length;
-                for (var i = 0; i < d; i++) {
-                        var g = a.charCodeAt(i),
-                                j = null;
-                        g < 128 ? c++ : j = g > 127 && g < 2048 ? String.fromCharCode(g >> 6 | 192) + String.fromCharCode(g & 63 | 128) : String.fromCharCode(g >> 12 | 224) + String.fromCharCode(g >> 6 & 63 | 128) + String.fromCharCode(g & 63 | 128);
-                        j !== null && (c > b && (e += a.slice(b, c)), e += j, b = c = i + 1)
+                i = 0;
+                while (i < d) {
+                        g = a.charCodeAt(i);
+                        j = null;
+                        if (g < 128) {
+                                c++;
+                        } else {
+                                j = (g > 127 && g < 2048 ? String.fromCharCode(g >> 6 | 192) + String.fromCharCode(g & 63 | 128) : String.fromCharCode(g >> 12 | 224) + String.fromCharCode(g >> 6 & 63 | 128) + String.fromCharCode(g & 63 | 128));
+                        }
+                        j !== null && (c > b && (e += a.slice(b, c)), e += j, b = c = i + 1);
+                        i++;
                 }
                 c > b && (e += a.slice(b, d));
-                a = e
+                a = e;
         }
-        do e = a.charCodeAt(f++), b = a.charCodeAt(f++), c = a.charCodeAt(f++), d = e << 16 | b << 8 | c, e = d >> 18 & 63, b = d >> 12 & 63, c = d >> 6 & 63, d &= 63, h[k++] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(e) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(b) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(c) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(d);
-        while (f < a.length);
+        while (true) {
+                e = a.charCodeAt(f++);
+                b = a.charCodeAt(f++);
+                c = a.charCodeAt(f++);
+                d = e << 16 | b << 8 | c;
+                e = d >> 18 & 63;
+                b = d >> 12 & 63;
+                c = d >> 6 & 63;
+                d &= 63;
+                h[k++] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(e) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(b) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(c) + "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".charAt(d);
+                if (!(f < a.length)) break;
+        }
         h = h.join("");
         f = a.length % 3;
-        return (f ? h.slice(0, f - 3) : h) + "===".slice(f || 3)
+        return (f ? h.slice(0, f - 3) : h) + "===".slice(f || 3);
 };
 
-var Config = {
-        // vars
+global.log = console.log;
+
+Config = {
         i: false,
         inc: 0,
-        // functions
         gV: function (v, u) {
-                var query = Config.gP(u).substr(1);
-                var vars = query.split("&"),
-                        data = [];
-                for (var i = 0; i < vars.length; ++i) {
-                        var pair = vars[i].split("=");
-                        if (pair[0] == v)
-                                if (this.i === false)
-                                        return (this.i === false) ? pair[1] : !(this.i = !this.i);
-                        else
-                                data.push(pair);
+                var data, i, pair, query, vars;
+                query = Config.gP(u).substr(1);
+                vars = query.split("&");
+                data = [];
+                i = 0;
+                while (i < vars.length) {
+                        pair = vars[i].split("=");
+                        if (pair[0] === v) {
+                                if (this.i === false) {
+                                        return (this.i === false ? pair[1] : !(this.i = !this.i));
+                                } else {
+                                        data.push(pair);
+                                }
+                        }++i;
                 }
-                return (data === []) ? false : data;
+                if (data === []) {
+                        return false;
+                } else {
+                        return data;
+                }
         },
         gZ: function (v, u) {
                 this.i = false;
@@ -74,83 +100,39 @@ var Config = {
                 return u.substr(u.indexOf("?"), u.length);
         },
         cH: function (r) {
-                var z = "i";
+                var z;
+                z = "i";
                 if (Config.gVc(z, r)) return z;
-                z = "m"; //ethod
+                z = "m";
                 if (Config.gVc(z, r)) return z;
-                z = "h"; //andler
+                z = "h";
                 if (Config.gVc(z, r)) return z;
-                return false
+                return false;
         },
         gI: function () {
                 return this.inc = this.inc + 1;
         }
-}
+};
 
-// {
-        var getNetworkIP = (function () {
-                var ignoreRE = /^(127\.0\.0\.1|::1|fe80(:1)?::1(%.*)?)$/i;
-
-                var exec = require('child_process').exec;
-                var cached;
-                var command;
-                var filterRE;
-
-                switch (process.platform) {
-                        // TODO: implement for OSs without ifconfig command
-                case 'darwin':
-                        command = 'ifconfig';
-                        filterRE = /\binet\s+([^\s]+)/g;
-                        // filterRE = /\binet6\s+([^\s]+)/g; // IPv6
-                        break;
-                default:
-                        command = 'ifconfig';
-                        filterRE = /\binet\b[^:]+:\s*([^\s]+)/g;
-                        // filterRE = /\binet6[^:]+:\s*([^\s]+)/g; // IPv6
-                        break;
-                }
-
-                return function (callback, bypassCache) {
-                        // get cached value
-                        if (cached && !bypassCache) {
-                                callback(null, cached);
-                                return;
-                        }
-                        // system call
-                        exec(command, function (error, stdout, sterr) {
-                                var ips = [];
-                                // extract IPs
-                                var matches = stdout.match(filterRE);
-                                // JS has no lookbehind REs, so we need a trick
-                                for (var i = 0; i < matches.length; i++) {
-                                        ips.push(matches[i].replace(filterRE, '$1'));
-                                }
-
-                                // filter BS
-                                for (var i = 0, l = ips.length; i < l; i++) {
-                                        if (!ignoreRE.test(ips[i])) {
-                                                //if (!error) {
-                                                cached = ips[i];
-                                                //}
-                                                callback(error, ips[i]);
-                                                return;
-                                        }
-                                }
-                                // nothing found
-                                callback(error, null);
-                        });
-                };
-        })();
-//}
-
-getNetworkIP(function (error, ip) { console.log(ip); if (error) console.log('error:', error); }, false);
+(function (callback) {
+        var socket;
+        socket = require("net").createConnection(80, "localhost");
+        socket.on("connect", function () {
+                callback(socket.address().address);
+                return socket.end();
+        });
+        return socket.on("error", function (e) {
+                return process.exit();
+        });
+})(function (a) {
+        log(a);
+        a = a.split(/\./g);
+        a = a[0] + "." + a[1] + "." + a[2];
+        return log("Detected IP-Spectrum: " + a);
+});
 
 http.createServer(function (request, response) {
-
-        var uri = url.parse(request.url).pathname,
-                filename = path.join(process.cwd(), uri);
-
-        //if (filename === process.cwd() + "/") {
-                //filename = path.join(process.cwd(), "ui/index");
-                //isMime = html;
+        var filename, uri;
+        uri = url.parse(request.url).pathname;
+        return filename = path.join(process.cwd(), uri);
 }).listen(80);
